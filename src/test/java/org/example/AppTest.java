@@ -1,18 +1,11 @@
 package org.example;
 
 import static org.junit.Assert.assertTrue;
-
-import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -20,12 +13,14 @@ import java.util.concurrent.TimeUnit;
 public class AppTest
 {
     @Test
-    public void loginPageTest()
-    {
+    public void loginPageTest() throws InterruptedException {
         assertTrue( true );
+
+        //Chrome browser.
         //System.setProperty("webdriver.chrome.driver","C:\\Users\\Ahmet\\Desktop\\Selenium_Project\\drivers\\chromedriver.exe");
         //WebDriver driver = new ChromeDriver();
 
+        //Firefox browser.
         System.setProperty("webdriver.gecko.driver","C:\\Users\\Ahmet\\Desktop\\Selenium_Project\\drivers\\geckodriver.exe");
         WebDriver driver = new FirefoxDriver();
 
@@ -37,8 +32,10 @@ public class AppTest
         driver.manage().timeouts().pageLoadTimeout(40, TimeUnit.SECONDS);
         driver.manage().timeouts().implicitlyWait(10,TimeUnit.SECONDS);
 
+        //This is the base url that i worked on.
         driver.get("https://www.trendyol.com/");
 
+        //The part where I check that the main page is opened.
         String expected_title = "En Trend Ürünler Türkiye'nin Online Alışveriş Sitesi Trendyol'da";
         String actual_title = driver.getTitle();
         if (expected_title.equals(actual_title)){
@@ -47,17 +44,22 @@ public class AppTest
             System.out.println("Test Failed!");
         }
 
+        //Processing part continuous below.
         driver.findElement(By.cssSelector(".navigation-icon-user")).click();
 
         driver.findElement(By.id("email")).click();
 
-        driver.findElement(By.id("email")).sendKeys("ameliatan2355@gmail.com");
+        //USername
+        driver.findElement(By.id("email")).sendKeys("Write a Username Here!");
 
         driver.findElement(By.id("password")).click();
 
-        driver.findElement(By.id("password")).sendKeys("test1234");
+        //Password
+        driver.findElement(By.id("password")).sendKeys("Write a Password Here!");
         driver.findElement(By.id("loginSubmit")).click();
 
+
+        //The part where I check whether login passed or failed.
         String actualUrl="https://www.trendyol.com/";
         String expectedUrl= driver.getCurrentUrl();
 
@@ -70,15 +72,19 @@ public class AppTest
             System.out.println("Login Failed!");
         }
 
+
+        //The part that i searched a word in searching box.
         driver.get("https://www.trendyol.com/butik/liste/erkek");
         WebElement search = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.cssSelector(".search-box"))));
         search.click();
         WebElement pushitem = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.cssSelector(".search-box"))));
         pushitem.sendKeys("bilgisayar");
 
+        //I put the result of the search in a list.
         List<WebElement> list;
         list = Arrays.asList(driver.findElement(By.xpath("//*[@id=\"auto-complete-app\"]/div/div[2]/descendant::div[@class='suggestion-result']")));
 
+        //Choosing a category from the options that contains "Bilgisayar".
         for (int i=0; i<list.size();i++){
             if (list.get(i).getText().contains("Bilgisayar")){
                 list.get(i).click();
@@ -86,18 +92,16 @@ public class AppTest
             }
         }
 
-        WebElement chosen_product = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath("/html/body/div[3]/div/div/div/div[2]/div[2]/div/div[5]/div[1]/a/div[1]/div/img"))));
+        //Choosed a product from the website.
+        WebElement chosen_product = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath("//img[@src='https://cdn.dsmcdn.com//ty5/product/media/images/20200716/13/4607280/77062627/0/0_org.jpg']"))));
         chosen_product.click();
 
-        WebElement addedproduct = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath("/html/body/div[3]/div/div/div[2]/div[2]/div[2]/div[1]/button[1]/div[1]"))));
+        //The part where the product is thrown into the basket
+        WebElement addedproduct = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath("/html/body/div[3]/div/div/div[2]/div[2]/div[2]/div[5]/button[1]/div[1]"))));
         addedproduct.click();
 
-        String basket_price = driver.findElement(By.xpath("/html/body/div[3]/div[2]/div[2]/section/section[1]/div[2]/div/div/div[2]/div[2]/div[3]/div[2]")).getText();
-        System.out.println(basket_price);
-
-        // 7 | click | linkText=Sepete Git |
+        //Going to the basket.
         driver.findElement(By.linkText("Sepete Git")).click();
-
 
     }
 }
